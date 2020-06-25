@@ -50,6 +50,7 @@ class Pong:
         self.delta_factor = 1.8
         self.min_delta_factor = .8
         self.score_timer = 300
+        self.volley = 0
 
     def display(self):
         """ Display the game. """
@@ -145,6 +146,7 @@ class Pong:
             if intersect_angle > -1.1 and intersect_angle < 1.1:  # Paddle miss
                 self.ball_delta_x, self.ball_delta_y = math.cos(intersect_angle) / self.delta_factor, \
                                                       -math.sin(intersect_angle) / self.delta_factor
+                self.volley += 1
         elif self.ball_x < -self.size_x:
             self.score_2 += 1
             self.sentinel = False
@@ -157,7 +159,8 @@ class Pong:
             if intersect_angle > -1.1 and intersect_angle < 1.1:  # Paddle miss
                 self.ball_delta_x, self.ball_delta_y = -math.cos(intersect_angle) / self.delta_factor, \
                                                        -math.sin(intersect_angle) / self.delta_factor
-            self.hit = True
+                self.hit = True
+                self.volley += 1
         elif self.ball_x > self.screen_x + self.size_x:
             self.score_1 += 1
             self.sentinel = False
@@ -252,7 +255,7 @@ if __name__ == "__main__":
             score_1, score_2 = game.score_1, game.score_2
 
         num_games += 1
-        print("Round: {}, Score: {} - {}".format(num_games, score_1, score_2))
+        print("Round: {}, Score: {} - {}, Volley: {}".format(num_games, score_1, score_2, game.volley))
 
         if params["train"]:
             agent.replay_new(params["batch_size"])
