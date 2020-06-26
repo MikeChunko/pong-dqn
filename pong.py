@@ -28,12 +28,15 @@ class Pong:
     def __init__(self, draw=True, screen_x=300, screen_y=300):
         pyg.init()
         pyg.font.init()
-        self.screen_x, self.screen_y = screen_x, screen_y
-        self.screen = pyg.display.set_mode((self.screen_x, self.screen_y))
         self.white = (255, 255, 255)
         self.size_x = self.size_y = 10  # "Pixel" size
-        pyg.display.update()
-        pyg.display.set_caption("Pong")
+        self.screen_x, self.screen_y = screen_x, screen_y
+
+        if draw:
+            self.screen = pyg.display.set_mode((self.screen_x, self.screen_y))
+            pyg.display.update()
+            pyg.display.set_caption("Pong")
+
         self.clock = pyg.time.Clock()
         self.sentinel = True
         self.font = pyg.font.SysFont("hack", 30)
@@ -175,8 +178,11 @@ class Pong:
         self.process_input(input)
         self.move_paddles()
         self.move_ball()
-        self.display()
-        pyg.display.update()
+
+        if self.draw:
+            self.display()
+            pyg.display.update()
+
         self.clock.tick(tick)
 
 
