@@ -24,7 +24,7 @@ class Agent(object):
         model.add(Dense(output_dim=self.first_layer, activation="relu", input_dim=4))
         model.add(Dense(output_dim=self.second_layer, activation="relu"))
         model.add(Dense(output_dim=self.third_layer, activation="relu"))
-        model.add(Dense(output_dim=2, activation="softmax"))
+        model.add(Dense(output_dim=3, activation="softmax"))
         model.compile(loss="mse", optimizer=Adam(self.learning_rate))
 
         if not self.train:

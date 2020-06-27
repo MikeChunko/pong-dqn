@@ -11,12 +11,12 @@ from keras.utils import to_categorical
 
 def define_parameters():
     params = dict()
-    params["epsilon_decay_linear"] = 1 / 500
+    params["epsilon_decay_linear"] = 1 / 100
     params["learning_rate"] = 0.0005
-    params["first_layer_size"] = 15
-    params["second_layer_size"] = 15
-    params["third_layer_size"] = 15
-    params["episodes"] = 1000
+    params["first_layer_size"] = 25
+    params["second_layer_size"] = 25
+    params["third_layer_size"] = 25
+    params["episodes"] = 200
     params["memory_size"] = 2500
     params["batch_size"] = 50
     params["weights_path"] = "weights.hdf5"
@@ -103,6 +103,8 @@ class Pong:
             self.delta_2 = -.5
         elif input == 1:
             self.delta_2 = .5
+        elif input == 2:
+            self.delta_2 = 0
 
     def move_paddles(self):
         """ Move both paddles.
@@ -200,7 +202,7 @@ def str_to_bool(v):
 if __name__ == "__main__":
     pyg.init()
     pyg.font.init()
-    tick = 1000
+    tick = 2000
     params = define_parameters()
     num_games = 0
 
@@ -228,16 +230,18 @@ if __name__ == "__main__":
 
                 state_old = np.asarray(game.get_features())
                 if randint(0, 1) < agent.epsilon:  # Random action
-                    final_input = randint(0, 1)
-                    final_move = to_categorical(final_input, num_classes=2)
+                    final_input = randint(0, 2)
+                    final_move = to_categorical(final_input, num_classes=3)
                 else:  # Predict action based on nn
                     prediction = agent.model.predict(state_old.reshape((1, 4)))
-                    final_move = to_categorical(np.argmax(prediction[0]), num_classes=2)
+                    final_move = to_categorical(np.argmax(prediction[0]), num_classes=3)
 
-                    if np.array_equal(final_move, [1, 0]):
+                    if np.array_equal(final_move, [1, 0, 0]):
                         final_input = 0
-                    else:
+                    elif np.array_equal(final_move, [0, 1, 0]):
                         final_input = 1
+                    else:
+                        final_input = 2
 
             game.step(tick=tick, input=final_input)
 
